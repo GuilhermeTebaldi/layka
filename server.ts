@@ -1082,6 +1082,14 @@ async function startServer() {
     }
   });
 
+  app.get('/api/health', (_req, res) => {
+    res.json({
+      ok: true,
+      service: 'layka-api',
+      now: new Date().toISOString()
+    });
+  });
+
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
