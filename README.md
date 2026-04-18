@@ -29,6 +29,10 @@ Set `VITE_API_BASE_URL` in your frontend environment:
 VITE_API_BASE_URL=https://your-api-domain.com
 ```
 
+Important: do **not** include `/api` in this value.
+Correct: `https://api.laikazero.com`
+Incorrect: `https://api.laikazero.com/api`
+
 You can also create a `.env.production` file for Vite production builds with this value. Keep `.env.production` out of source control.
 
 Examples:

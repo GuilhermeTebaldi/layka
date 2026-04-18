@@ -60,7 +60,18 @@ type PersistedFilters = {
 };
 
 const FILTERS_STORAGE_KEY = 'layka_filters_v1';
-const API_BASE_URL = String(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
+const normalizeApiBase = (value: string) => {
+  const trimmed = value.trim().replace(/\/+$/, '');
+  if (!trimmed) return '';
+  return trimmed.replace(/\/api$/i, '');
+};
+
+const API_BASE_URL = normalizeApiBase(String(import.meta.env.VITE_API_BASE_URL || ''));
+
+const buildApiUrl = (path: string) => {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE_URL}${normalizedPath}`;
+};
 
 const isIataCode = (value: unknown): value is string =>
   typeof value === 'string' && /^[A-Z]{3}$/.test(value.trim().toUpperCase());
@@ -301,7 +312,7 @@ export default function App() {
         query.set('returnDate', nextReturnDate);
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/deals?${query.toString()}`);
+      const response = await fetch(buildApiUrl(`/api/deals?${query.toString()}`));
       const data = await parseApiJson(response);
       if (data.error) throw new Error(data.details || 'Failed to fetch deals');
       setServerMsg(data.message || null);
@@ -348,7 +359,7 @@ export default function App() {
         try {
           const { latitude, longitude } = position.coords;
           const response = await fetch(
-            `${API_BASE_URL}/api/airports/nearby?lat=${latitude}&lon=${longitude}&limit=8`
+            buildApiUrl(`/api/airports/nearby?lat=${latitude}&lon=${longitude}&limit=8`)
           );
           const data = await parseApiJson(response);
           const airports = Array.isArray(data.airports) ? data.airports : [];
@@ -467,7 +478,7 @@ export default function App() {
     const timer = setTimeout(async () => {
       try {
         setAirportSearchLoading(true);
-        const response = await fetch(`${API_BASE_URL}/api/airports/search?q=${encodeURIComponent(query)}&limit=8`, {
+        const response = await fetch(buildApiUrl(`/api/airports/search?q=${encodeURIComponent(query)}&limit=8`), {
           signal: controller.signal
         });
         const data = await parseApiJson(response);
