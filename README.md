@@ -21,7 +21,8 @@ View your app in AI Studio: https://ai.studio/apps/9d390fae-7da7-4ce3-b165-afc24
 
 ## Production (Frontend + API)
 
-If you deploy only the frontend (for example on Vercel), `/api/*` will return `404` unless you configure an API backend URL.
+On Vercel, this repo now ships API routes directly from `api/[...path].ts`.
+You do not need a separate Render backend for `/api/*`.
 
 Set `VITE_API_BASE_URL` in your frontend environment:
 
@@ -35,7 +36,7 @@ Incorrect: `https://api.laikazero.com/api`
 
 You can also create a `.env.production` file for Vite production builds with this value. Keep `.env.production` out of source control.
 
-Examples:
+Examples (optional):
 - frontend: `https://www.laikazero.com`
 - backend API: `https://api.laikazero.com`
 
@@ -43,5 +44,7 @@ Then the frontend will call:
 - `https://api.laikazero.com/api/deals`
 - `https://api.laikazero.com/api/airports/search`
 - `https://api.laikazero.com/api/airports/nearby`
+
+If `VITE_API_BASE_URL` is empty, the frontend calls same-origin `/api/*` (recommended on Vercel).
 
 If you use Cloudflare with Vercel, keep DNS records as **DNS only** (no proxy) for domains pointing to Vercel.

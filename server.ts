@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import express from 'express';
-import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
@@ -635,9 +634,9 @@ const fetchWizzSmartSearchItems = async (options: {
   throw lastError ?? new Error('All Wizz SmartSearch endpoints failed');
 };
 
-async function startServer() {
+export async function createApp(options: { includeFrontend?: boolean } = {}) {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
+  const includeFrontend = options.includeFrontend ?? true;
   const corsOrigin = String(process.env.CORS_ORIGIN || '*');
 
   app.use(express.json());
@@ -1090,23 +1089,38 @@ async function startServer() {
     });
   });
 
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+  if (includeFrontend) {
+    if (process.env.NODE_ENV !== 'production') {
+      const { createServer: createViteServer } = await import('vite');
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } else {
+      const distPath = path.join(process.cwd(), 'dist');
+      app.use(express.static(distPath));
+      app.get('*', (_req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+      });
+    }
   }
+
+  return app;
+}
+
+async function startServer() {
+  const app = await createApp({ includeFrontend: true });
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer().catch((error) => {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  });
+}
