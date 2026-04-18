@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import axios from 'axios';
@@ -1109,20 +1108,4 @@ export async function createApp(options: { includeFrontend?: boolean } = {}) {
   }
 
   return app;
-}
-
-async function startServer() {
-  const app = await createApp({ includeFrontend: true });
-  const PORT = Number(process.env.PORT) || 3000;
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
-
-if (!process.env.VERCEL) {
-  startServer().catch((error) => {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  });
 }
