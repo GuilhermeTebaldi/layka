@@ -7,7 +7,6 @@ import {
   Filter,
   Backpack,
   AlertCircle,
-  Globe,
   Info,
   LocateFixed,
   CalendarDays,
@@ -169,12 +168,6 @@ export default function App() {
     () => formatHubLabel(selectedHub, nearbyAirports),
     [selectedHub, nearbyAirports]
   );
-
-  const airlineLabel = airline === 'ALL'
-    ? 'Todas (Ryanair + Wizz Air)'
-    : airline === 'RYANAIR'
-      ? 'Ryanair'
-      : 'Wizz Air';
 
   const closeMobileFiltersAfterAction = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -568,19 +561,11 @@ export default function App() {
           <div className="grid grid-cols-2 gap-1.5">
             <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
               <div className="text-[9px] uppercase opacity-80">Origem</div>
-              <div className="text-[11px] font-bold">{selectedHub === 'ANY' ? 'Sem filtro' : selectedHub}</div>
+              <div className="text-[11px] font-bold truncate">{selectedHub === 'ANY' ? 'Sem filtro' : selectedHub}</div>
             </div>
             <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
-              <div className="text-[9px] uppercase opacity-80">Companhia</div>
-              <div className="text-[11px] font-bold truncate">{airline === 'ALL' ? 'Todas' : airline === 'RYANAIR' ? 'Ryanair' : 'Wizz Air'}</div>
-            </div>
-            <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
-              <div className="text-[9px] uppercase opacity-80">Viagem</div>
-              <div className="text-[11px] font-bold">{tripType === 'ROUND_TRIP' ? 'Ida e Volta' : 'Só Ida'}</div>
-            </div>
-            <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
-              <div className="text-[9px] uppercase opacity-80">Preço Máx</div>
-              <div className="text-[11px] font-bold">{maxPrice > 0 ? `€${maxPrice}` : 'Sem limite'}</div>
+              <div className="text-[9px] uppercase opacity-80">Resultados</div>
+              <div className="text-[11px] font-bold">{deals.length}</div>
             </div>
           </div>
 
@@ -633,9 +618,7 @@ export default function App() {
                   Fechar
                 </button>
               </div>
-              <p className="text-[11px] text-slate-600 mt-1">
-                Todos os filtros estão aqui, organizados para mobile, sem perder nenhuma função.
-              </p>
+              <p className="text-[11px] text-slate-600 mt-1">Somente os filtros principais ficam visíveis por padrão.</p>
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <button
                   onClick={() => saveFiltersNow(true)}
@@ -683,20 +666,9 @@ export default function App() {
               <p className="text-[11px] text-emerald-700 mb-3">{filtersSavedMsg}</p>
             )}
 
-            <div className="space-y-6 md:space-y-5">
-              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                <h3 className="text-[12px] font-bold text-slate-800 uppercase flex items-center gap-2 mb-2">
-                  <Globe size={14} className="text-slate-500" />
-                  Origin Hub = Aeroporto de Saída
-                </h3>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  As siglas como <b>LIS</b>, <b>OPO</b> e <b>MAD</b> são códigos IATA (3 letras) dos aeroportos.
-                  Você pode usar os botões rápidos, digitar qualquer IATA manualmente, ou detectar aeroportos próximos da sua localização.
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
+            <div className="space-y-4 md:space-y-4">
+              <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50 space-y-3">
+                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider">
                   Origem (cidade, país ou IATA)
                 </label>
                 <div className="flex gap-2">
@@ -717,17 +689,27 @@ export default function App() {
                     Buscar
                   </button>
                 </div>
-                <button
-                  onClick={() => setNoOriginFilter()}
-                  className="mt-2 w-full md:w-auto px-3 py-2 rounded-md border border-slate-300 text-slate-700 text-[11px] font-bold hover:border-slate-500"
-                >
-                  Sem filtro de origem (mais baratos globais)
-                </button>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => useMyLocation()}
+                    disabled={geoLoading}
+                    className="inline-flex items-center justify-center gap-1 px-2 py-2 rounded-md text-[10px] font-bold border border-slate-300 text-slate-700 hover:border-slate-500 disabled:opacity-60"
+                  >
+                    <LocateFixed size={12} />
+                    {geoLoading ? 'Localizando...' : 'Minha localização'}
+                  </button>
+                  <button
+                    onClick={() => setNoOriginFilter()}
+                    className="px-2 py-2 rounded-md border border-slate-300 text-slate-700 text-[10px] font-bold hover:border-slate-500"
+                  >
+                    Sem filtro
+                  </button>
+                </div>
                 {airportSearchLoading && originInput.trim().length >= 2 && (
-                  <p className="text-[11px] text-slate-500 mt-1">Procurando aeroportos...</p>
+                  <p className="text-[11px] text-slate-500">Procurando aeroportos...</p>
                 )}
                 {airportSuggestions.length > 0 && originInput.trim().length >= 2 && (
-                  <div className="mt-2 border border-slate-200 rounded-lg bg-white max-h-56 overflow-auto">
+                  <div className="border border-slate-200 rounded-lg bg-white max-h-56 overflow-auto">
                     {airportSuggestions.map((airport) => (
                       <button
                         key={`${airport.iata}-${airport.city}-${airport.country}`}
@@ -735,38 +717,24 @@ export default function App() {
                         className="w-full text-left px-3 py-2 border-b border-slate-100 last:border-b-0 hover:bg-slate-50"
                       >
                         <div className="text-[12px] font-semibold text-slate-800">{airport.label}</div>
-                        <div className="text-[11px] text-slate-600">
-                          Voos de saída disponíveis: {airport.outboundCount}
-                        </div>
+                        <div className="text-[11px] text-slate-600">Voos de saída: {airport.outboundCount}</div>
                       </button>
                     ))}
                   </div>
                 )}
-                <p className="text-[11px] text-text-muted mt-1">
-                  Hub atual: <b>{originLabel}</b>
+                <p className="text-[11px] text-text-muted">
+                  Origem atual: <b>{originLabel}</b>
                 </p>
+                {geoMessage && (
+                  <p className="text-[11px] text-emerald-700">{geoMessage}</p>
+                )}
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider">
-                    {originFromLocation
-                      ? 'Origem definida pela localização'
-                      : selectedHub === 'ANY'
-                        ? 'Sem filtro de origem ativo'
-                        : 'Hubs Populares'}
-                  </label>
-                  <button
-                    onClick={() => useMyLocation()}
-                    disabled={geoLoading}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold border border-slate-300 text-slate-700 hover:border-slate-500 disabled:opacity-60"
-                  >
-                    <LocateFixed size={12} />
-                    {geoLoading ? 'Localizando...' : 'Usar minha localização'}
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-2">
+              <details className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+                <summary className="px-3 py-2.5 cursor-pointer text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                  Hubs populares
+                </summary>
+                <div className="p-3 pt-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-2 border-t border-slate-100">
                   {POPULAR_HUBS.map((hub) => (
                     <button
                       key={hub.iata}
@@ -790,173 +758,178 @@ export default function App() {
                     </button>
                   ))}
                 </div>
+              </details>
 
-                {geoMessage && (
-                  <p className="text-[11px] text-emerald-700 mt-2">{geoMessage}</p>
-                )}
-
-                {nearbyAirports.length > 0 && (
-                  <div className="mt-3 p-3 rounded-lg border border-slate-200 bg-slate-50">
-                    <div className="text-[11px] font-bold text-slate-700 mb-2 flex items-center gap-1">
-                      <MapPin size={12} />
-                      Aeroportos mais próximos (pela sua localização)
-                    </div>
-                    <div className="space-y-1.5">
-                      {nearbyAirports.map((airport) => (
-                        <button
-                          key={`${airport.iata}-${airport.distanceKm}`}
-                          onClick={() => applyLocationOrigin(airport)}
-                          className="w-full text-left px-2.5 py-2 rounded-md border border-transparent hover:border-slate-300 bg-white"
-                        >
-                          <div className="text-[12px] font-semibold text-slate-800">
-                            {airport.city} ({airport.iata})
-                          </div>
-                          <div className="text-[11px] text-slate-600">
-                            {airport.country} · {airport.distanceKm.toFixed(1)} km
-                          </div>
-                        </button>
-                      ))}
-                    </div>
+              {nearbyAirports.length > 0 && (
+                <details className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+                  <summary className="px-3 py-2.5 cursor-pointer text-[11px] font-bold uppercase tracking-wider text-slate-700 inline-flex items-center gap-1">
+                    <MapPin size={12} />
+                    Aeroportos próximos
+                  </summary>
+                  <div className="p-3 pt-1 space-y-1.5 border-t border-slate-100">
+                    {nearbyAirports.map((airport) => (
+                      <button
+                        key={`${airport.iata}-${airport.distanceKm}`}
+                        onClick={() => applyLocationOrigin(airport)}
+                        className="w-full text-left px-2.5 py-2 rounded-md border border-transparent hover:border-slate-300 bg-slate-50"
+                      >
+                        <div className="text-[12px] font-semibold text-slate-800">
+                          {airport.city} ({airport.iata})
+                        </div>
+                        <div className="text-[11px] text-slate-600">
+                          {airport.country} · {airport.distanceKm.toFixed(1)} km
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                )}
-              </div>
+                </details>
+              )}
 
-              <div>
-                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">Companhia</label>
-                <div className="grid grid-cols-3 gap-0.5 bg-slate-100 p-0.5 rounded-md">
-                  <button
-                    onClick={() => setAirline('ALL')}
-                    className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
-                      airline === 'ALL' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    Todas
-                  </button>
-                  <button
-                    onClick={() => setAirline('RYANAIR')}
-                    className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
-                      airline === 'RYANAIR' ? 'bg-ryanair-blue text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    Ryanair
-                  </button>
-                  <button
-                    onClick={() => setAirline('WIZZ')}
-                    className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
-                      airline === 'WIZZ' ? 'bg-[#7E007B] text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    Wizz Air
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
-                  Tipo de viagem
-                </label>
-                <div className="flex gap-0.5 bg-slate-100 p-0.5 rounded-md">
-                  <button
-                    onClick={() => setTripType('ONE_WAY')}
-                    className={`flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
-                      tripType === 'ONE_WAY' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    Só Ida
-                  </button>
-                  <button
-                    onClick={() => setTripType('ROUND_TRIP')}
-                    className={`flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
-                      tripType === 'ROUND_TRIP' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    Ida e Volta
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3">
+              <div className="space-y-3">
                 <div>
                   <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
-                    <span className="inline-flex items-center gap-1"><CalendarDays size={12} /> Data de ida</span>
+                    Tipo de viagem
                   </label>
-                  <input
-                    type="date"
-                    value={departureDate}
-                    onChange={(e) => setDepartureDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-border-base rounded-md text-[13px]"
-                  />
+                  <div className="flex gap-0.5 bg-slate-100 p-0.5 rounded-md">
+                    <button
+                      onClick={() => setTripType('ONE_WAY')}
+                      className={`flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
+                        tripType === 'ONE_WAY' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      Só Ida
+                    </button>
+                    <button
+                      onClick={() => setTripType('ROUND_TRIP')}
+                      className={`flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
+                        tripType === 'ROUND_TRIP' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      Ida e Volta
+                    </button>
+                  </div>
                 </div>
 
-                {tripType === 'ROUND_TRIP' && (
+                <div className="grid grid-cols-1 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
-                      <span className="inline-flex items-center gap-1"><ArrowRightLeft size={12} /> Data de volta</span>
+                      <span className="inline-flex items-center gap-1"><CalendarDays size={12} /> Data de ida</span>
                     </label>
                     <input
                       type="date"
-                      value={returnDate}
-                      min={departureDate}
-                      onChange={(e) => setReturnDate(e.target.value)}
+                      value={departureDate}
+                      onChange={(e) => setDepartureDate(e.target.value)}
                       className="w-full px-3 py-2 border border-border-base rounded-md text-[13px]"
                     />
                   </div>
-                )}
-              </div>
 
-              <div>
-                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
-                  Passageiros (adultos)
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={adults}
-                  onChange={(e) => setAdults(parseInt(e.target.value, 10) || 1)}
-                  className="w-full px-3 py-2 border border-border-base rounded-md text-[13px] font-mono focus:border-ryanair-blue outline-none"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider">Preço Máximo</label>
-                  <span className="text-[14px] font-bold text-ryanair-blue font-mono">{maxPrice > 0 ? `€${maxPrice}` : 'Sem limite'}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="300"
-                  step="5"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value, 10))}
-                  className="w-full h-1 bg-border-base rounded-lg appearance-none cursor-pointer accent-ryanair-blue"
-                />
-                {maxPrice === 0 && (
-                  <p className="text-[11px] text-slate-600 mt-1">
-                    Sem limite de preço: mostrando todos os voos disponíveis na data selecionada.
-                  </p>
-                )}
-              </div>
-
-              <div className="pt-4 border-t border-border-base">
-                <div className="flex items-start gap-2.5 bg-[#f0f4ff] p-3.5 rounded-md border border-ryanair-blue/10">
-                  <Backpack className="text-ryanair-blue shrink-0" size={16} />
-                  <p className="text-[11px] text-ryanair-blue font-medium leading-relaxed">
-                    <b>Filtro aplicado:</b> tarifa base com bagagem de cabine pequena.
-                  </p>
+                  {tripType === 'ROUND_TRIP' && (
+                    <div>
+                      <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
+                        <span className="inline-flex items-center gap-1"><ArrowRightLeft size={12} /> Data de volta</span>
+                      </label>
+                      <input
+                        type="date"
+                        value={returnDate}
+                        min={departureDate}
+                        onChange={(e) => setReturnDate(e.target.value)}
+                        className="w-full px-3 py-2 border border-border-base rounded-md text-[13px]"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
+
+              <details className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+                <summary className="px-3 py-2.5 cursor-pointer text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                  Filtros avançados
+                </summary>
+                <div className="p-3 pt-1 space-y-4 border-t border-slate-100">
+                  <div>
+                    <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">Companhia</label>
+                    <div className="grid grid-cols-3 gap-0.5 bg-slate-100 p-0.5 rounded-md">
+                      <button
+                        onClick={() => setAirline('ALL')}
+                        className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
+                          airline === 'ALL' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        Todas
+                      </button>
+                      <button
+                        onClick={() => setAirline('RYANAIR')}
+                        className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
+                          airline === 'RYANAIR' ? 'bg-ryanair-blue text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        Ryanair
+                      </button>
+                      <button
+                        onClick={() => setAirline('WIZZ')}
+                        className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
+                          airline === 'WIZZ' ? 'bg-[#7E007B] text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        Wizz Air
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
+                      Passageiros (adultos)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={adults}
+                      onChange={(e) => setAdults(parseInt(e.target.value, 10) || 1)}
+                      className="w-full px-3 py-2 border border-border-base rounded-md text-[13px] font-mono focus:border-ryanair-blue outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider">Preço Máximo</label>
+                      <span className="text-[14px] font-bold text-ryanair-blue font-mono">{maxPrice > 0 ? `€${maxPrice}` : 'Sem limite'}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="300"
+                      step="5"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(parseInt(e.target.value, 10))}
+                      className="w-full h-1 bg-border-base rounded-lg appearance-none cursor-pointer accent-ryanair-blue"
+                    />
+                    {maxPrice === 0 && (
+                      <p className="text-[11px] text-slate-600 mt-1">
+                        Sem limite de preço: mostrando todos os voos disponíveis na data selecionada.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex items-start gap-2 bg-[#f0f4ff] p-2.5 rounded-md border border-ryanair-blue/10">
+                    <Backpack className="text-ryanair-blue shrink-0" size={14} />
+                    <p className="text-[11px] text-ryanair-blue font-medium leading-relaxed">
+                      Tarifa base com bagagem de cabine pequena.
+                    </p>
+                  </div>
+                </div>
+              </details>
             </div>
           </section>
         </aside>
 
         <section className="flex-1 min-w-0 space-y-4 md:space-y-5 xl:h-full xl:overflow-y-auto xl:overscroll-contain xl:pr-1">
           <div className="filter-summary hidden md:flex flex-wrap items-center gap-3 bg-white p-4 rounded-lg border border-border-base">
-            <div className="text-[13px] text-text-muted">Companhia: <b className="text-text-main">{airlineLabel}</b></div>
             <div className="text-[13px] text-text-muted">Origem: <b className="text-text-main">{originLabel}</b></div>
             <div className="text-[13px] text-text-muted">
               Viagem: <b className="text-text-main">{tripType === 'ROUND_TRIP' ? 'Ida e Volta' : 'Só Ida'}</b>
+            </div>
+            <div className="text-[13px] text-text-muted">
+              Preço: <b className="text-text-main">{maxPrice > 0 ? `até €${maxPrice}` : 'sem limite'}</b>
             </div>
             <div className="text-[13px] text-text-muted ml-auto">Resultados: <b className="text-text-main">{deals.length}</b></div>
           </div>
