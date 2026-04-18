@@ -637,8 +637,20 @@ const fetchWizzSmartSearchItems = async (options: {
 async function startServer() {
   const app = express();
   const PORT = 3000;
+  const corsOrigin = process.env.CORS_ORIGIN || '*';
 
   app.use(express.json());
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', corsOrigin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
+
+    next();
+  });
 
   app.get('/api/airports/nearby', async (req, res) => {
     try {

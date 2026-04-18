@@ -18,3 +18,24 @@ View your app in AI Studio: https://ai.studio/apps/9d390fae-7da7-4ce3-b165-afc24
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Production (Frontend + API)
+
+If you deploy only the frontend (for example on Vercel), `/api/*` will return `404` unless you configure an API backend URL.
+
+Set `VITE_API_BASE_URL` in your frontend environment:
+
+```
+VITE_API_BASE_URL=https://your-api-domain.com
+```
+
+Examples:
+- frontend: `https://www.laikazero.com`
+- backend API: `https://api.laikazero.com`
+
+Then the frontend will call:
+- `https://api.laikazero.com/api/deals`
+- `https://api.laikazero.com/api/airports/search`
+- `https://api.laikazero.com/api/airports/nearby`
+
+If you use Cloudflare with Vercel, keep DNS records as **DNS only** (no proxy) for domains pointing to Vercel.

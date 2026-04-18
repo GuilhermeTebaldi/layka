@@ -60,12 +60,39 @@ type PersistedFilters = {
 };
 
 const FILTERS_STORAGE_KEY = 'layka_filters_v1';
+const API_BASE_URL = String(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
 
 const isIataCode = (value: unknown): value is string =>
   typeof value === 'string' && /^[A-Z]{3}$/.test(value.trim().toUpperCase());
 
 const isDateOnly = (value: unknown): value is string =>
   typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.trim());
+
+const parseApiJson = async (response: Response) => {
+  const raw = await response.text();
+  let parsed: any = null;
+
+  if (raw) {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = null;
+    }
+  }
+
+  if (!response.ok) {
+    const details = parsed?.details || parsed?.error || raw || `HTTP ${response.status}`;
+    throw new Error(String(details));
+  }
+
+  if (!parsed) {
+    throw new Error(
+      'API respondeu em formato inválido. Verifica se o backend /api está publicado (não apenas o frontend).'
+    );
+  }
+
+  return parsed;
+};
 
 const POPULAR_HUBS = [
   { iata: 'STN', name: 'London Stansted', city: 'London', country: 'UK' },
@@ -274,8 +301,8 @@ export default function App() {
         query.set('returnDate', nextReturnDate);
       }
 
-      const response = await fetch(`/api/deals?${query.toString()}`);
-      const data = await response.json();
+      const response = await fetch(`${API_BASE_URL}/api/deals?${query.toString()}`);
+      const data = await parseApiJson(response);
       if (data.error) throw new Error(data.details || 'Failed to fetch deals');
       setServerMsg(data.message || null);
       setDeals(data.deals || []);
@@ -320,8 +347,10 @@ export default function App() {
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          const response = await fetch(`/api/airports/nearby?lat=${latitude}&lon=${longitude}&limit=8`);
-          const data = await response.json();
+          const response = await fetch(
+            `${API_BASE_URL}/api/airports/nearby?lat=${latitude}&lon=${longitude}&limit=8`
+          );
+          const data = await parseApiJson(response);
           const airports = Array.isArray(data.airports) ? data.airports : [];
           setNearbyAirports(airports);
 
@@ -438,10 +467,10 @@ export default function App() {
     const timer = setTimeout(async () => {
       try {
         setAirportSearchLoading(true);
-        const response = await fetch(`/api/airports/search?q=${encodeURIComponent(query)}&limit=8`, {
+        const response = await fetch(`${API_BASE_URL}/api/airports/search?q=${encodeURIComponent(query)}&limit=8`, {
           signal: controller.signal
         });
-        const data = await response.json();
+        const data = await parseApiJson(response);
         if (!controller.signal.aborted) {
           setAirportSuggestions(Array.isArray(data.airports) ? data.airports : []);
         }
