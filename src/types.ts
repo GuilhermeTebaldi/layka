@@ -1,0 +1,33 @@
+export interface FlightDeal {
+  airline: string;
+  type: string;
+  tripType?: 'ONE_WAY' | 'ROUND_TRIP';
+  baggage: string;
+  price: number;
+  pricePerPerson?: number;
+  outboundPrice?: number;
+  returnPrice?: number;
+  currency: string;
+  origin: string;
+  originIata: string;
+  destination: string;
+  destinationIata: string;
+  destinationCity?: string;
+  destinationCountry?: string;
+  destinationLatitude?: number;
+  destinationLongitude?: number;
+  destinationPhotoUrl?: string;
+  destinationPreviewImageUrl?: string;
+  destinationMapUrl?: string;
+  destinationMapEmbedUrl?: string;
+  departureDate: string;
+  departureTime: string;
+  arrivalDate: string;
+  arrivalTime: string;
+  returnDate?: string;
+  returnTime?: string;
+  returnArrivalDate?: string;
+  returnArrivalTime?: string;
+  link: string;
+  status: string;
+}

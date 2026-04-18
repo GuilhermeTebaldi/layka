@@ -1,0 +1,6 @@
+{
+  "name": "Ryanair LowFare Finder",
+  "description": "Real-time discovery engine for Ryanair's most economical fares. Focuses exclusively on basic 'small backpack' tariffs for maximum savings.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

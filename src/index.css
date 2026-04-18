@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --color-ryanair-blue: #073590;
+  --color-ryanair-yellow: #f1c40f;
+  --color-bg-base: #f8f9fa;
+  --color-text-main: #1c1c1c;
+  --color-text-muted: #666666;
+  --color-border-base: #e0e0e0;
+  --color-success-base: #27ae60;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-bg-base text-text-main;
+  }
+}
