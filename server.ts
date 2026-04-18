@@ -2,10 +2,6 @@ import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import axios from 'axios';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 type TripType = 'ONE_WAY' | 'ROUND_TRIP';
 
@@ -64,6 +60,7 @@ const ANY_ORIGIN_CANDIDATES_ROUND_TRIP_LIMIT = 5;
 
 let cachedWizzApiBaseUrl: string | null = null;
 let cachedWizzApiBaseUrlExpiresAt = 0;
+let hasLoggedWizzApiDiscoveryFailure = false;
 let cachedWizzAirports = new Map<string, AirportLocation>();
 let cachedWizzAirportsExpiresAt = 0;
 const wikipediaSummaryCache = new Map<string, WikipediaSummary | null>();
@@ -406,7 +403,12 @@ const discoverWizzApiBaseUrl = async (): Promise<string | null> => {
     cachedWizzApiBaseUrlExpiresAt = now + WIZZ_API_URL_CACHE_TTL_MS;
     return detectedBaseUrl;
   } catch (error: any) {
-    console.error('Failed to discover Wizz API base URL:', error.message);
+    if (!hasLoggedWizzApiDiscoveryFailure) {
+      hasLoggedWizzApiDiscoveryFailure = true;
+      console.warn(
+        `Unable to auto-discover Wizz API base URL (${error?.message || 'unknown error'}). Using fallback base URL.`
+      );
+    }
     return null;
   }
 };

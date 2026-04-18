@@ -536,21 +536,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen xl:h-screen xl:overflow-hidden bg-bg-base flex flex-col font-sans">
-      <header className="bg-ryanair-blue text-white min-h-[82px] px-4 md:px-8 xl:px-12 py-3 flex items-center justify-between border-b-[4px] border-ryanair-yellow">
+      <header className="bg-ryanair-blue text-white min-h-20.5 px-4 md:px-8 xl:px-12 py-3 flex items-center justify-between border-b-4 border-ryanair-yellow">
         <div className="logo-area">
-          <h1 className="text-[20px] md:text-[24px] font-extrabold tracking-tight flex items-center gap-[10px]">
+          <h1 className="text-[20px] md:text-[24px] font-extrabold tracking-tight flex items-center gap-2.5">
             LAYKA <span className="font-light opacity-80 hidden sm:inline">| Filtre low-cost</span>
           </h1>
         </div>
 
-        <div className="hidden md:flex items-center gap-[12px] bg-white/10 px-[12px] py-[6px] rounded-[4px] text-[12px] font-semibold uppercase">
-          <div className="w-[8px] h-[8px] bg-ryanair-yellow rounded-full animate-pulse shadow-[0_0_8px_rgba(241,196,15,0.5)]"></div>
+        <div className="hidden md:flex items-center gap-3 bg-white/10 px-3 py-1.5 rounded-sm text-[12px] font-semibold uppercase">
+          <div className="w-2 h-2 bg-ryanair-yellow rounded-full animate-pulse shadow-[0_0_8px_rgba(241,196,15,0.5)]"></div>
           {now.toLocaleString('pt-PT')}
         </div>
       </header>
 
       <div className="md:hidden sticky top-0 z-30 bg-ryanair-blue text-white border-b border-ryanair-yellow/40 px-3 py-2 shadow-sm">
-        <div className="rounded-[10px] border border-white/20 bg-white/10 p-2.5 space-y-2">
+        <div className="rounded-lg border border-white/20 bg-white/10 p-2.5 space-y-2">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
               <div className="text-[12px] font-extrabold tracking-wide">Painel Mobile</div>
@@ -559,26 +559,26 @@ export default function App() {
             <button
               onClick={() => fetchDeals()}
               disabled={loading}
-              className="text-[10px] font-bold uppercase px-2.5 py-1 rounded-[6px] bg-white/15 border border-white/25 disabled:opacity-60"
+              className="text-[10px] font-bold uppercase px-2.5 py-1 rounded-md bg-white/15 border border-white/25 disabled:opacity-60"
             >
               {loading ? 'Atualizando...' : 'Atualizar'}
             </button>
           </div>
 
           <div className="grid grid-cols-2 gap-1.5">
-            <div className="rounded-[8px] border border-white/20 bg-white/10 px-2 py-1.5">
+            <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
               <div className="text-[9px] uppercase opacity-80">Origem</div>
               <div className="text-[11px] font-bold">{selectedHub === 'ANY' ? 'Sem filtro' : selectedHub}</div>
             </div>
-            <div className="rounded-[8px] border border-white/20 bg-white/10 px-2 py-1.5">
+            <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
               <div className="text-[9px] uppercase opacity-80">Companhia</div>
               <div className="text-[11px] font-bold truncate">{airline === 'ALL' ? 'Todas' : airline === 'RYANAIR' ? 'Ryanair' : 'Wizz Air'}</div>
             </div>
-            <div className="rounded-[8px] border border-white/20 bg-white/10 px-2 py-1.5">
+            <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
               <div className="text-[9px] uppercase opacity-80">Viagem</div>
               <div className="text-[11px] font-bold">{tripType === 'ROUND_TRIP' ? 'Ida e Volta' : 'Só Ida'}</div>
             </div>
-            <div className="rounded-[8px] border border-white/20 bg-white/10 px-2 py-1.5">
+            <div className="rounded-lg border border-white/20 bg-white/10 px-2 py-1.5">
               <div className="text-[9px] uppercase opacity-80">Preço Máx</div>
               <div className="text-[11px] font-bold">{maxPrice > 0 ? `€${maxPrice}` : 'Sem limite'}</div>
             </div>
@@ -587,22 +587,22 @@ export default function App() {
           <div className="grid grid-cols-3 gap-1.5">
             <button
               onClick={() => setMobileFiltersOpen((open) => !open)}
-              className="inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase px-2 py-1.5 rounded-[6px] bg-white text-ryanair-blue border border-white"
+              className="inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase px-2 py-1.5 rounded-md bg-white text-ryanair-blue border border-white"
             >
               <Filter size={12} />
               Filtros
             </button>
             <button
-              onClick={useMyLocation}
+              onClick={() => useMyLocation()}
               disabled={geoLoading}
-              className="inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase px-2 py-1.5 rounded-[6px] bg-white/15 border border-white/25 disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase px-2 py-1.5 rounded-md bg-white/15 border border-white/25 disabled:opacity-60"
             >
               <LocateFixed size={12} />
               Local
             </button>
             <button
               onClick={() => saveFiltersNow(true)}
-              className="inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase px-2 py-1.5 rounded-[6px] bg-white/15 border border-white/25"
+              className="inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase px-2 py-1.5 rounded-md bg-white/15 border border-white/25"
             >
               Salvar
             </button>
@@ -614,13 +614,13 @@ export default function App() {
 
       <main className="flex-1 min-h-0 w-full max-w-none px-3 sm:px-4 md:px-8 xl:px-12 py-4 md:py-6 flex flex-col xl:flex-row gap-4 md:gap-6 xl:overflow-hidden">
         <aside
-          className={`${mobileFiltersOpen ? 'fixed inset-0 z-50 flex bg-black/45 p-2' : 'hidden'} md:block md:static md:inset-auto md:z-auto md:bg-transparent md:p-0 w-full xl:w-[360px] xl:h-full xl:overflow-y-auto xl:overscroll-contain xl:pr-1`}
+          className={`${mobileFiltersOpen ? 'fixed inset-0 z-50 flex bg-black/45 p-2' : 'hidden'} md:block md:static md:inset-auto md:z-auto md:bg-transparent md:p-0 w-full xl:w-90 xl:h-full xl:overflow-y-auto xl:overscroll-contain xl:pr-1`}
           onClick={() => {
             if (mobileFiltersOpen) setMobileFiltersOpen(false);
           }}
         >
           <section
-            className="bg-white p-4 md:p-5 rounded-[12px] border border-border-base shadow-sm w-full h-[calc(100vh-16px)] overflow-y-auto md:h-auto md:overflow-visible"
+            className="bg-white p-4 md:p-5 rounded-xl border border-border-base shadow-sm w-full h-[calc(100vh-16px)] overflow-y-auto md:h-auto md:overflow-visible"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="md:hidden sticky top-0 z-10 -mx-4 px-4 pb-3 mb-4 bg-white border-b border-slate-200">
@@ -628,7 +628,7 @@ export default function App() {
                 <h2 className="font-extrabold text-[14px] text-slate-900 uppercase tracking-wide">Filtros Mobile</h2>
                 <button
                   onClick={() => setMobileFiltersOpen(false)}
-                  className="px-2.5 py-1 text-[10px] font-bold uppercase border border-slate-300 rounded-[6px] text-slate-700"
+                  className="px-2.5 py-1 text-[10px] font-bold uppercase border border-slate-300 rounded-md text-slate-700"
                 >
                   Fechar
                 </button>
@@ -639,7 +639,7 @@ export default function App() {
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <button
                   onClick={() => saveFiltersNow(true)}
-                  className="px-2.5 py-2 text-[10px] font-bold uppercase border border-slate-300 rounded-[6px] text-slate-700"
+                  className="px-2.5 py-2 text-[10px] font-bold uppercase border border-slate-300 rounded-md text-slate-700"
                 >
                   Salvar filtros
                 </button>
@@ -648,7 +648,7 @@ export default function App() {
                     fetchDeals();
                     setMobileFiltersOpen(false);
                   }}
-                  className="px-2.5 py-2 text-[10px] font-bold uppercase rounded-[6px] bg-ryanair-blue text-white"
+                  className="px-2.5 py-2 text-[10px] font-bold uppercase rounded-md bg-ryanair-blue text-white"
                 >
                   Ver resultados
                 </button>
@@ -663,13 +663,13 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => saveFiltersNow(true)}
-                  className="px-2.5 py-1.5 text-[10px] font-bold uppercase border border-slate-300 rounded-[6px] text-slate-700 hover:border-slate-500"
+                  className="px-2.5 py-1.5 text-[10px] font-bold uppercase border border-slate-300 rounded-md text-slate-700 hover:border-slate-500"
                   title="Salvar filtros"
                 >
                   Salvar
                 </button>
                 <button
-                  onClick={fetchDeals}
+                  onClick={() => fetchDeals()}
                   disabled={loading}
                   className="text-text-muted hover:text-ryanair-blue transition-colors disabled:opacity-50"
                   title="Atualizar busca"
@@ -708,18 +708,18 @@ export default function App() {
                       setError(null);
                     }}
                     placeholder="Ex: Rome, Italy ou FCO"
-                    className="flex-1 px-3 py-2 border border-border-base rounded-[6px] text-[13px] focus:border-ryanair-blue outline-none"
+                    className="flex-1 px-3 py-2 border border-border-base rounded-md text-[13px] focus:border-ryanair-blue outline-none"
                   />
                   <button
                     onClick={applyManualOrigin}
-                    className="px-3 py-2 border border-ryanair-blue text-ryanair-blue rounded-[6px] text-[11px] font-bold hover:bg-ryanair-blue hover:text-white transition-colors"
+                    className="px-3 py-2 border border-ryanair-blue text-ryanair-blue rounded-md text-[11px] font-bold hover:bg-ryanair-blue hover:text-white transition-colors"
                   >
                     Buscar
                   </button>
                 </div>
                 <button
                   onClick={() => setNoOriginFilter()}
-                  className="mt-2 w-full md:w-auto px-3 py-2 rounded-[6px] border border-slate-300 text-slate-700 text-[11px] font-bold hover:border-slate-500"
+                  className="mt-2 w-full md:w-auto px-3 py-2 rounded-md border border-slate-300 text-slate-700 text-[11px] font-bold hover:border-slate-500"
                 >
                   Sem filtro de origem (mais baratos globais)
                 </button>
@@ -727,7 +727,7 @@ export default function App() {
                   <p className="text-[11px] text-slate-500 mt-1">Procurando aeroportos...</p>
                 )}
                 {airportSuggestions.length > 0 && originInput.trim().length >= 2 && (
-                  <div className="mt-2 border border-slate-200 rounded-[8px] bg-white max-h-56 overflow-auto">
+                  <div className="mt-2 border border-slate-200 rounded-lg bg-white max-h-56 overflow-auto">
                     {airportSuggestions.map((airport) => (
                       <button
                         key={`${airport.iata}-${airport.city}-${airport.country}`}
@@ -757,9 +757,9 @@ export default function App() {
                         : 'Hubs Populares'}
                   </label>
                   <button
-                    onClick={useMyLocation}
+                    onClick={() => useMyLocation()}
                     disabled={geoLoading}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded-[6px] text-[10px] font-bold border border-slate-300 text-slate-700 hover:border-slate-500 disabled:opacity-60"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold border border-slate-300 text-slate-700 hover:border-slate-500 disabled:opacity-60"
                   >
                     <LocateFixed size={12} />
                     {geoLoading ? 'Localizando...' : 'Usar minha localização'}
@@ -779,7 +779,7 @@ export default function App() {
                         setLocationSearchNonce((value) => value + 1);
                         closeMobileFiltersAfterAction();
                       }}
-                      className={`text-left px-3 py-2 rounded-[6px] border transition-all ${
+                      className={`text-left px-3 py-2 rounded-md border transition-all ${
                         selectedHub === hub.iata
                           ? 'border-ryanair-blue bg-ryanair-blue/5 text-ryanair-blue'
                           : 'border-border-base text-text-muted hover:border-[#ADB5BD]'
@@ -796,7 +796,7 @@ export default function App() {
                 )}
 
                 {nearbyAirports.length > 0 && (
-                  <div className="mt-3 p-3 rounded-[8px] border border-slate-200 bg-slate-50">
+                  <div className="mt-3 p-3 rounded-lg border border-slate-200 bg-slate-50">
                     <div className="text-[11px] font-bold text-slate-700 mb-2 flex items-center gap-1">
                       <MapPin size={12} />
                       Aeroportos mais próximos (pela sua localização)
@@ -806,7 +806,7 @@ export default function App() {
                         <button
                           key={`${airport.iata}-${airport.distanceKm}`}
                           onClick={() => applyLocationOrigin(airport)}
-                          className="w-full text-left px-2.5 py-2 rounded-[6px] border border-transparent hover:border-slate-300 bg-white"
+                          className="w-full text-left px-2.5 py-2 rounded-md border border-transparent hover:border-slate-300 bg-white"
                         >
                           <div className="text-[12px] font-semibold text-slate-800">
                             {airport.city} ({airport.iata})
@@ -823,10 +823,10 @@ export default function App() {
 
               <div>
                 <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">Companhia</label>
-                <div className="grid grid-cols-3 gap-[2px] bg-slate-100 p-[2px] rounded-[6px]">
+                <div className="grid grid-cols-3 gap-0.5 bg-slate-100 p-0.5 rounded-md">
                   <button
                     onClick={() => setAirline('ALL')}
-                    className={`py-2 rounded-[4px] text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
                       airline === 'ALL' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -834,7 +834,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setAirline('RYANAIR')}
-                    className={`py-2 rounded-[4px] text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
                       airline === 'RYANAIR' ? 'bg-ryanair-blue text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -842,7 +842,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setAirline('WIZZ')}
-                    className={`py-2 rounded-[4px] text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    className={`py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
                       airline === 'WIZZ' ? 'bg-[#7E007B] text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -855,10 +855,10 @@ export default function App() {
                 <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2">
                   Tipo de viagem
                 </label>
-                <div className="flex gap-[2px] bg-slate-100 p-[2px] rounded-[6px]">
+                <div className="flex gap-0.5 bg-slate-100 p-0.5 rounded-md">
                   <button
                     onClick={() => setTripType('ONE_WAY')}
-                    className={`flex-1 py-2 rounded-[4px] text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    className={`flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
                       tripType === 'ONE_WAY' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -866,7 +866,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setTripType('ROUND_TRIP')}
-                    className={`flex-1 py-2 rounded-[4px] text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    className={`flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-wider transition-all ${
                       tripType === 'ROUND_TRIP' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -884,7 +884,7 @@ export default function App() {
                     type="date"
                     value={departureDate}
                     onChange={(e) => setDepartureDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-border-base rounded-[6px] text-[13px]"
+                    className="w-full px-3 py-2 border border-border-base rounded-md text-[13px]"
                   />
                 </div>
 
@@ -898,7 +898,7 @@ export default function App() {
                       value={returnDate}
                       min={departureDate}
                       onChange={(e) => setReturnDate(e.target.value)}
-                      className="w-full px-3 py-2 border border-border-base rounded-[6px] text-[13px]"
+                      className="w-full px-3 py-2 border border-border-base rounded-md text-[13px]"
                     />
                   </div>
                 )}
@@ -914,7 +914,7 @@ export default function App() {
                   max="10"
                   value={adults}
                   onChange={(e) => setAdults(parseInt(e.target.value, 10) || 1)}
-                  className="w-full px-3 py-2 border border-border-base rounded-[6px] text-[13px] font-mono focus:border-ryanair-blue outline-none"
+                  className="w-full px-3 py-2 border border-border-base rounded-md text-[13px] font-mono focus:border-ryanair-blue outline-none"
                 />
               </div>
 
@@ -930,7 +930,7 @@ export default function App() {
                   step="5"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(parseInt(e.target.value, 10))}
-                  className="w-full h-[4px] bg-border-base rounded-lg appearance-none cursor-pointer accent-ryanair-blue"
+                  className="w-full h-1 bg-border-base rounded-lg appearance-none cursor-pointer accent-ryanair-blue"
                 />
                 {maxPrice === 0 && (
                   <p className="text-[11px] text-slate-600 mt-1">
@@ -940,7 +940,7 @@ export default function App() {
               </div>
 
               <div className="pt-4 border-t border-border-base">
-                <div className="flex items-start gap-[10px] bg-[#f0f4ff] p-[14px] rounded-[6px] border border-ryanair-blue/10">
+                <div className="flex items-start gap-2.5 bg-[#f0f4ff] p-3.5 rounded-md border border-ryanair-blue/10">
                   <Backpack className="text-ryanair-blue shrink-0" size={16} />
                   <p className="text-[11px] text-ryanair-blue font-medium leading-relaxed">
                     <b>Filtro aplicado:</b> tarifa base com bagagem de cabine pequena.
@@ -952,7 +952,7 @@ export default function App() {
         </aside>
 
         <section className="flex-1 min-w-0 space-y-4 md:space-y-5 xl:h-full xl:overflow-y-auto xl:overscroll-contain xl:pr-1">
-          <div className="filter-summary hidden md:flex flex-wrap items-center gap-3 bg-white p-4 rounded-[10px] border border-border-base">
+          <div className="filter-summary hidden md:flex flex-wrap items-center gap-3 bg-white p-4 rounded-lg border border-border-base">
             <div className="text-[13px] text-text-muted">Companhia: <b className="text-text-main">{airlineLabel}</b></div>
             <div className="text-[13px] text-text-muted">Origem: <b className="text-text-main">{originLabel}</b></div>
             <div className="text-[13px] text-text-muted">
@@ -1005,7 +1005,7 @@ export default function App() {
                 <h3 className="font-bold text-red-900">Erro de comunicação</h3>
                 <p className="text-sm text-red-700 mt-1 max-w-xl">{error}</p>
                 <button
-                  onClick={fetchDeals}
+                  onClick={() => fetchDeals()}
                   className="mt-6 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors"
                 >
                   Tentar novamente
@@ -1046,8 +1046,8 @@ export default function App() {
 
       <footer className="bg-white border-t border-border-base py-4 px-4 md:px-8 xl:px-12 flex flex-col md:flex-row justify-between items-center text-[12px] color-text-muted mt-auto gap-3">
         <div className="flex flex-wrap gap-4">
-          <div className="flex items-center gap-[6px]">🎒 <b>Tarifa base:</b> bagagem pequena</div>
-          <div className="flex items-center gap-[6px]">📍 <b>Origem:</b> por sigla IATA ou geolocalização</div>
+          <div className="flex items-center gap-1.5">🎒 <b>Tarifa base:</b> bagagem pequena</div>
+          <div className="flex items-center gap-1.5">📍 <b>Origem:</b> por sigla IATA ou geolocalização</div>
         </div>
         <div>Atualizado em {new Date().toLocaleDateString()}</div>
       </footer>
